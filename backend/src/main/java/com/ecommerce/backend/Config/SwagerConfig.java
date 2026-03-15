@@ -1,4 +1,4 @@
-package com.ecommerce.backend.Config;
+package com.ecommerce.backend.config;
 
 public class SwagerConfig {
     

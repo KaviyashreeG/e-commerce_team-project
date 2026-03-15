@@ -1,4 +1,4 @@
-package com.ecommerce.backend.Entity.Enum;
+package com.ecommerce.backend.entity.enums;
 
 
 

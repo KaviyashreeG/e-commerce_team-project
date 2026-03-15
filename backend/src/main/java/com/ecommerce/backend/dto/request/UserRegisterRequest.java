@@ -1,6 +1,6 @@
 package com.ecommerce.backend.dto.request;
 
-import com.ecommerce.backend.Entity.Enum.UserRole;
+import com.ecommerce.backend.entity.enums.UserRole;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

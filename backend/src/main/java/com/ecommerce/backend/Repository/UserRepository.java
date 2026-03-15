@@ -1,4 +1,4 @@
-package com.ecommerce.backend.Repository;
+package com.ecommerce.backend.repository;
 
 
 
@@ -8,8 +8,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.ecommerce.backend.Entity.Enum.UserRole;
-import com.ecommerce.backend.Entity.User;
+import com.ecommerce.backend.entity.User;
+import com.ecommerce.backend.entity.enums.UserRole;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

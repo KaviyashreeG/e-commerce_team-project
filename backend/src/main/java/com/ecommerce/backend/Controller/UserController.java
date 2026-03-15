@@ -1,11 +1,12 @@
-package com.ecommerce.backend.Controller;
+package com.ecommerce.backend.controller;
 
 
 
 import com.ecommerce.backend.dto.request.UserRegisterRequest;
 // import com.ecommerce.backend.dto.response.AuthResponse;
 import com.ecommerce.backend.dto.response.UserResponse;
-import com.ecommerce.backend.Services.UserService;
+import com.ecommerce.backend.service.UserService;
+
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

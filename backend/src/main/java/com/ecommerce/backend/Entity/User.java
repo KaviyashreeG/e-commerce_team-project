@@ -1,9 +1,9 @@
-package com.ecommerce.backend.Entity;
+package com.ecommerce.backend.entity;
 
 
 import java.time.LocalDateTime;
 
-import com.ecommerce.backend.Entity.Enum.UserRole;
+import com.ecommerce.backend.entity.enums.UserRole;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
