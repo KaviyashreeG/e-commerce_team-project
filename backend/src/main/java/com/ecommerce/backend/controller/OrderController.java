@@ -1,4 +1,4 @@
-package com.ecommerce.backend.Controller;
+package com.ecommerce.backend.controller;
 
 
 import com.ecommerce.backend.dto.request.OrderRequest;
