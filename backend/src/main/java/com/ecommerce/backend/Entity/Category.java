@@ -2,6 +2,7 @@ package com.ecommerce.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.ecommerce.backend.entity.Product;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,8 @@ public class Category {
     private String name;
 
     private String description;
+    
+    private String imageUrl;
 
     @CreationTimestamp
     @Column(updatable = false)

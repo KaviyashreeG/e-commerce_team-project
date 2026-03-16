@@ -106,7 +106,7 @@ public class OrderService {
                 .deliveryCharge(deliveryCharge)
                 .protectPromiseFee(protectPromiseFee)
                 .finalAmount(finalAmount)
-                .status(finalAmount.compareTo(BigDecimal.ZERO) <= 0 ? OrderStatus.CONFIRMED : OrderStatus.PENDING)
+                .status(OrderStatus.PENDING)
                 .shippingAddress(request.getShippingAddress())
                 .items(items)
                 .build();

@@ -8,6 +8,7 @@ const navItems = [
   { to: '/admin/applications', label: 'Applications', icon: '📋' },
   { to: '/admin/products', label: 'Products', icon: '📦' },
   { to: '/admin/orders', label: 'Orders', icon: '🛒' },
+  { to: '/admin/categories', label: 'Categories', icon: '📁' },
 ];
 
 const statusColors = {

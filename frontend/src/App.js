@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { CompareProvider } from './context/CompareContext';
 import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
@@ -22,6 +23,8 @@ import ProfilePage from './pages/customer/ProfilePage';
 import WishlistPage from './pages/customer/WishlistPage';
 import WalletPage from './pages/customer/WalletPage';
 import RewardsPage from './pages/customer/RewardsPage';
+import ComparePage from './pages/customer/ComparePage';
+import CompareBar from './components/products/CompareBar';
 
 // Seller Dashboard Pages
 import SellerDashboard from './pages/seller/SellerDashboard';
@@ -35,6 +38,7 @@ import AdminApplications from './pages/admin/AdminApplications';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminAnalyticsPage from './pages/admin/AdminAnalyticsPage';
+import AdminCategories from './pages/admin/AdminCategories';
 
 import SuperAdminDashboard from './pages/superadmin/SuperAdminDashboard';
 import SuperAdminUsers from './pages/superadmin/SuperAdminUsers';
@@ -47,7 +51,8 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <CartProvider>
-          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <CompareProvider>
+            <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <Toaster
               position="top-right"
               toastOptions={{
@@ -104,6 +109,7 @@ function App() {
                   <RewardsPage />
                 </ProtectedRoute>
               } />
+              <Route path="/compare" element={<ComparePage />} />
 
               {/* Seller Routes */}
               <Route path="/seller" element={
@@ -153,6 +159,11 @@ function App() {
                   <AdminAnalyticsPage />
                 </ProtectedRoute>
               } />
+              <Route path="/admin/categories" element={
+                <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+                  <AdminCategories />
+                </ProtectedRoute>
+              } />
 
               {/* Super Admin Routes */}
               <Route path="/superadmin" element={
@@ -184,7 +195,9 @@ function App() {
               {/* Fallback */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+            <CompareBar />
           </BrowserRouter>
+          </CompareProvider>
         </CartProvider>
       </AuthProvider>
     </ThemeProvider>

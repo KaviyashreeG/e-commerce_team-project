@@ -116,8 +116,8 @@ export default function CheckoutPage() {
   })();
 
   // Reward discount: 100 pts = ₹10
-  const rewardDiscount = useRewards && rewardPoints
-    ? Math.floor(rewardPointsToRedeem / 100) * 10
+  const rewardDiscount = useRewards && rewardPoints && rewardPoints.pointsBalance >= 100
+    ? Math.floor(Math.min(rewardPointsToRedeem, rewardPoints.pointsBalance) / 100) * 10
     : 0;
 
   const afterDiscount = Math.max(0, itemsTotal - couponDiscount - rewardDiscount);
