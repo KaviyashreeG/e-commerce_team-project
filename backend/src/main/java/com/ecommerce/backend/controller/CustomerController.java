@@ -166,4 +166,3 @@ public class CustomerController {
         return ResponseEntity.ok(ApiResponse.success("Removed from wishlist", null));
     }
 }
-
