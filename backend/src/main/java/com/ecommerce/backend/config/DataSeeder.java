@@ -144,9 +144,9 @@ public class DataSeeder implements CommandLineRunner {
             customer = customerRepository.save(
                     Customer.builder()
                             .user(user)
-                            .name("John Doe")
-                            .phone("5554443333")
-                            .address("789 Street, City, Country")
+                            .name("Kishhore")
+                            .phone("9876543210")
+                            .address("Hongkong Street, Gurilla City, Africa")
                             .build()
             );
 
