@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 
 const INR = (v) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(v || 0);
 
-const stripePromise = loadStripe('pk_test_51SqtFuH3E32cbsgKdclDZ7UwUCHTD6uq6smZ2Nnb0iJj8xsycmP1eeTQntPR1lvWCuI7FlwLWSS8i62KUbwfZobH00n0IdW9vu');
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51SqtFuH3E32cbsgKdclDZ7UwUCHTD6uq6smZ2Nnb0iJj8xsycmP1eeTQntPR1lvWCuI7FlwLWSS8i62KUbwfZobH00n0IdW9vu');
 
 function StripeOrderForm({ clientSecret, amount, onSuccess, onCancel }) {
   const stripe = useStripe();
