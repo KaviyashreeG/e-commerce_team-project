@@ -18,7 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findBySellerSellerIdAndStatus(Long sellerId, ProductStatus status);
     List<Product> findBySellerSellerId(Long sellerId);
 
-    @Query("SELECT p FROM Product p WHERE p.status = 'ACTIVE' AND " +
+    @Query("SELECT p FROM Product p WHERE p.status = :status AND " +
            "(:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
            "(:categoryId IS NULL OR p.category.categoryId = :categoryId) AND " +
            "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
@@ -27,6 +27,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                  @Param("categoryId") Long categoryId,
                                  @Param("minPrice") BigDecimal minPrice,
                                  @Param("maxPrice") BigDecimal maxPrice,
+                                 @Param("status") ProductStatus status,
                                  Pageable pageable);
 
     Page<Product> findByStatus(ProductStatus status, Pageable pageable);

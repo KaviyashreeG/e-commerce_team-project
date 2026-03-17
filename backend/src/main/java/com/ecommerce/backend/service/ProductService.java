@@ -137,19 +137,22 @@ public class ProductService {
         return toResponse(productRepository.save(product));
     }
 
+    @Transactional(readOnly = true)
     public Page<ProductResponse> searchProducts(String keyword, Long categoryId,
                                                  BigDecimal minPrice, BigDecimal maxPrice,
                                                  Pageable pageable) {
-        return productRepository.searchProducts(keyword, categoryId, minPrice, maxPrice, pageable)
+        return productRepository.searchProducts(keyword, categoryId, minPrice, maxPrice, ProductStatus.ACTIVE, pageable)
                 .map(this::toResponse);
     }
 
+    @Transactional(readOnly = true)
     public ProductResponse getProductById(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         return toResponse(product);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> getSellerProducts(Long userId) {
         Seller seller = sellerRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
@@ -166,6 +169,7 @@ public class ProductService {
         return toResponse(productRepository.save(product));
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> getSimilarProducts(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
@@ -182,12 +186,14 @@ public class ProductService {
         ).getContent().stream().map(this::toResponse).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> getRecommendations(Long userId) {
         // AI Logic: Recently viewed + Purchase history + Top selling
         return productRepository.findRecommendations(userId, Pageable.ofSize(10))
                 .getContent().stream().map(this::toResponse).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> getLowStockProducts(Long userId) {
         Seller seller = sellerRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Seller profile not found"));

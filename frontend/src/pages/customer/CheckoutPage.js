@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 
 const INR = (v) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(v || 0);
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51SqtFuH3E32cbsgKdclDZ7UwUCHTD6uq6smZ2Nnb0iJj8xsycmP1eeTQntPR1lvWCuI7FlwLWSS8i62KUbwfZobH00n0IdW9vu');
+const stripePromise = loadStripe('pk_test_51SqtFuH3E32cbsgKdclDZ7UwUCHTD6uq6smZ2Nnb0iJj8xsycmP1eeTQntPR1lvWCuI7FlwLWSS8i62KUbwfZobH00n0IdW9vu');
 
 function StripeOrderForm({ clientSecret, amount, onSuccess, onCancel }) {
   const stripe = useStripe();
@@ -115,9 +115,9 @@ export default function CheckoutPage() {
     return itemsTotal * parseFloat(appliedCoupon.discountValue) / 100;
   })();
 
-  // Reward discount: 100 pts = ₹10
+  // Reward discount: 100 pts = ₹1
   const rewardDiscount = useRewards && rewardPoints && rewardPoints.pointsBalance >= 100
-    ? Math.floor(Math.min(rewardPointsToRedeem, rewardPoints.pointsBalance) / 100) * 10
+    ? Math.floor(Math.min(rewardPointsToRedeem, rewardPoints.pointsBalance) / 100)
     : 0;
 
   const afterDiscount = Math.max(0, itemsTotal - couponDiscount - rewardDiscount);
@@ -362,7 +362,7 @@ export default function CheckoutPage() {
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Available Points</p>
                     <p className="text-2xl font-bold text-amber-500">{rewardPoints.pointsBalance} pts</p>
-                    <p className="text-xs text-gray-400">100 points = ₹10 off</p>
+                    <p className="text-xs text-gray-400">100 points = ₹1 off</p>
                   </div>
                   <label className="flex items-center gap-3 cursor-pointer">
                     <span className="text-sm text-gray-700 dark:text-gray-300">Use Points</span>

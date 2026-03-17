@@ -42,7 +42,7 @@ export default function SellerOrders() {
     <DashboardLayout title="Orders" navItems={navItems}>
       <div className="glass-card overflow-hidden">
         {loading ? (
-          <div className="p-6 space-y-3">{[1,2,3].map(i => <div key={i} className="shimmer h-14 rounded-xl" />)}</div>
+          <div className="p-6 space-y-3">{[1, 2, 3].map(i => <div key={i} className="shimmer h-14 rounded-xl" />)}</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">

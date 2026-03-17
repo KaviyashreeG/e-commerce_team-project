@@ -52,7 +52,7 @@ export default function RewardsPage() {
               <p className="text-white/80 text-sm mb-1">{currentTier.name} Member</p>
               <p className="text-5xl font-black mb-1">{current}</p>
               <p className="text-white/80 text-sm">Reward Points</p>
-              <p className="text-white/70 text-xs mt-2">100 pts = ₹10 off at checkout</p>
+              <p className="text-white/70 text-xs mt-2">100 pts = ₹1 off at checkout</p>
             </div>
           </div>
 
