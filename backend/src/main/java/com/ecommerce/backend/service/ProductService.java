@@ -182,6 +182,7 @@ public class ProductService {
                 minPrice,
                 maxPrice,
                 productId,
+                ProductStatus.ACTIVE,
                 Pageable.ofSize(5)
         ).getContent().stream().map(this::toResponse).collect(Collectors.toList());
     }
@@ -189,7 +190,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductResponse> getRecommendations(Long userId) {
         // AI Logic: Recently viewed + Purchase history + Top selling
-        return productRepository.findRecommendations(userId, Pageable.ofSize(10))
+        return productRepository.findRecommendations(userId, ProductStatus.ACTIVE, Pageable.ofSize(10))
                 .getContent().stream().map(this::toResponse).collect(Collectors.toList());
     }
 
@@ -198,7 +199,7 @@ public class ProductService {
         Seller seller = sellerRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Seller profile not found"));
         
-        return productRepository.findLowStockProducts(seller.getSellerId())
+        return productRepository.findLowStockProducts(seller.getSellerId(), ProductStatus.ACTIVE)
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
