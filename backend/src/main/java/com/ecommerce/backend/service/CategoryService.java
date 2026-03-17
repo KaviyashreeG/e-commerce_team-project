@@ -22,7 +22,25 @@ public class CategoryService {
                 .orElseThrow(() -> new RuntimeException("Category not found"));
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public Category createCategory(Category category) {
         return categoryRepository.save(category);
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public Category updateCategory(Long id, Category categoryDetails) {
+        Category category = getCategoryById(id);
+        category.setName(categoryDetails.getName());
+        category.setDescription(categoryDetails.getDescription());
+        category.setImageUrl(categoryDetails.getImageUrl());
+        return categoryRepository.save(category);
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void deleteCategory(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new RuntimeException("Category not found");
+        }
+        categoryRepository.deleteById(id);
     }
 }

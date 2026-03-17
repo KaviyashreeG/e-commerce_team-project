@@ -72,19 +72,24 @@ public class OrderService {
             }
         }
 
-        // Apply Reward Points (100 points = ₹10)
-        if (Boolean.TRUE.equals(request.getUseRewardPoints()) && request.getRewardPointsToRedeem() != null && request.getRewardPointsToRedeem() >= 100) {
-            int redeemableValue = (request.getRewardPointsToRedeem() / 100) * 10;
+        // Apply Reward Points (100 points = ₹1)
+        if (Boolean.TRUE.equals(request.getUseRewardPoints()) && request.getRewardPointsToRedeem() != null
+                && request.getRewardPointsToRedeem() >= 100) {
+            int redeemableValue = request.getRewardPointsToRedeem() / 100;
             discountAmount = discountAmount.add(BigDecimal.valueOf(redeemableValue));
-            rewardPointsService.redeemPoints(customer.getCustomerId(), request.getRewardPointsToRedeem(), "ORDER", null);
+            rewardPointsService.redeemPoints(customer.getCustomerId(), request.getRewardPointsToRedeem(), "ORDER",
+                    null);
         }
 
         BigDecimal afterDiscount = itemsTotal.subtract(discountAmount);
-        if (afterDiscount.compareTo(BigDecimal.ZERO) < 0) afterDiscount = BigDecimal.ZERO;
+        if (afterDiscount.compareTo(BigDecimal.ZERO) < 0)
+            afterDiscount = BigDecimal.ZERO;
 
-        BigDecimal deliveryCharge = afterDiscount.compareTo(BigDecimal.valueOf(500)) < 0 ? BigDecimal.valueOf(40) : BigDecimal.ZERO;
-        BigDecimal protectPromiseFee = Boolean.TRUE.equals(request.getProtectPromise()) ? BigDecimal.valueOf(29) : BigDecimal.ZERO;
-        
+        BigDecimal deliveryCharge = afterDiscount.compareTo(BigDecimal.valueOf(500)) < 0 ? BigDecimal.valueOf(40)
+                : BigDecimal.ZERO;
+        BigDecimal protectPromiseFee = Boolean.TRUE.equals(request.getProtectPromise()) ? BigDecimal.valueOf(29)
+                : BigDecimal.ZERO;
+
         BigDecimal finalAmount = afterDiscount.add(deliveryCharge).add(protectPromiseFee);
 
         // Apply Wallet
@@ -106,13 +111,22 @@ public class OrderService {
                 .deliveryCharge(deliveryCharge)
                 .protectPromiseFee(protectPromiseFee)
                 .finalAmount(finalAmount)
-                .status(finalAmount.compareTo(BigDecimal.ZERO) <= 0 ? OrderStatus.CONFIRMED : OrderStatus.PENDING)
+                .status(OrderStatus.PENDING)
                 .shippingAddress(request.getShippingAddress())
                 .items(items)
                 .build();
 
         items.forEach(item -> item.setOrder(order));
         Order savedOrder = orderRepository.save(order);
+
+        // Earn Reward Points (1 Rupee spent = 1 Point earned)
+        // Earned on the final amount paid (excluding discount and fees, or just total
+        // items value?)
+        // Let's go with items total to keep it simple and rewarding.
+        int pointsEarned = itemsTotal.intValue();
+        if (pointsEarned > 0) {
+            rewardPointsService.earnPoints(customer.getCustomerId(), pointsEarned, "ORDER", savedOrder.getOrderId());
+        }
 
         // Consume coupon
         if (request.getCouponCode() != null && !request.getCouponCode().isEmpty()) {
@@ -146,11 +160,12 @@ public class OrderService {
     public OrderResponse updateStatus(Long orderId, OrderStatus newStatus) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
-        
+
         // Admin approves return -> Refund to wallet
         if (newStatus == OrderStatus.RETURNED && order.getStatus() != OrderStatus.RETURNED) {
-            walletService.creditWallet(order.getCustomer().getCustomerId(), order.getFinalAmount(), "REFUND", order.getOrderId());
-            
+            walletService.creditWallet(order.getCustomer().getCustomerId(), order.getFinalAmount(), "REFUND",
+                    order.getOrderId());
+
             // Restore Stock
             for (OrderItem item : order.getItems()) {
                 if (item.getVariant() != null) {
@@ -191,7 +206,8 @@ public class OrderService {
 
         // Refund to Wallet
         if (order.getFinalAmount().compareTo(BigDecimal.ZERO) == 0 || order.getPayment() != null) {
-            walletService.creditWallet(order.getCustomer().getCustomerId(), order.getFinalAmount(), "REFUND", order.getOrderId());
+            walletService.creditWallet(order.getCustomer().getCustomerId(), order.getFinalAmount(), "REFUND",
+                    order.getOrderId());
         }
 
         return toResponse(orderRepository.save(order));
@@ -247,16 +263,16 @@ public class OrderService {
                         .productName(item.getProduct().getName())
                         .productImage(item.getProduct().getImages() != null && !item.getProduct().getImages().isEmpty()
                                 ? item.getProduct().getImages().stream()
-                                    .filter(img -> Boolean.TRUE.equals(img.getIsPrimary()))
-                                    .map(ProductImage::getImageUrl)
-                                    .findFirst()
-                                    .orElse(item.getProduct().getImages().get(0).getImageUrl())
+                                        .filter(img -> Boolean.TRUE.equals(img.getIsPrimary()))
+                                        .map(ProductImage::getImageUrl)
+                                        .findFirst()
+                                        .orElse(item.getProduct().getImages().get(0).getImageUrl())
                                 : null)
                         .quantity(item.getQuantity())
                         .price(item.getPrice())
                         .subtotal(item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                         .build())
-                .collect(Collectors.toList())
+                        .collect(Collectors.toList())
                 : List.of();
 
         PaymentResponse paymentResponse = null;

@@ -13,6 +13,8 @@ import com.ecommerce.backend.service.AnalyticsService;
 import com.ecommerce.backend.service.OrderService;
 import com.ecommerce.backend.service.ProductService;
 import com.ecommerce.backend.service.SellerApplicationService;
+import com.ecommerce.backend.service.CategoryService;
+import com.ecommerce.backend.entity.Category;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,7 @@ public class AdminController {
     private final OrderService orderService;
     private final AnalyticsService analyticsService;
     private final SellerRepository sellerRepository;
+    private final CategoryService categoryService;
     private final PasswordEncoder passwordEncoder;
 
     // Seller Applications
@@ -105,5 +108,22 @@ public class AdminController {
     public ResponseEntity<ApiResponse<DashboardAnalyticsResponse>> getAnalytics() {
         return ResponseEntity.ok(ApiResponse.success("Analytics fetched",
                 analyticsService.getAdminAnalytics()));
+    }
+
+    // Category Management
+    @PostMapping("/categories")
+    public ResponseEntity<ApiResponse<Category>> createCategory(@RequestBody Category category) {
+        return ResponseEntity.ok(ApiResponse.success("Category created", categoryService.createCategory(category)));
+    }
+
+    @PutMapping("/categories/{id}")
+    public ResponseEntity<ApiResponse<Category>> updateCategory(@PathVariable Long id, @RequestBody Category category) {
+        return ResponseEntity.ok(ApiResponse.success("Category updated", categoryService.updateCategory(id, category)));
+    }
+
+    @DeleteMapping("/categories/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.ok(ApiResponse.success("Category deleted", null));
     }
 }

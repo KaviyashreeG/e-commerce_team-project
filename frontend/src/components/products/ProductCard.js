@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useCompare } from '../../context/CompareContext';
 import { gsap } from 'gsap';
 
 const StarIcon = ({ filled }) => (
@@ -11,6 +12,9 @@ const StarIcon = ({ filled }) => (
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
+  const { compareItems, toggleCompare } = useCompare();
+
+  const isCompared = compareItems.some(item => item.productId === product.productId);
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -75,6 +79,20 @@ export default function ProductCard({ product }) {
           {product.stock === 0 && (
             <span className="absolute top-3 right-3 badge badge-danger">Out of Stock</span>
           )}
+
+          {/* Compare Checkbox */}
+          <div 
+            className="absolute bottom-3 left-3 flex items-center gap-2 bg-white/90 dark:bg-dark-800/90 px-2 py-1 rounded-md shadow-sm cursor-pointer hover:bg-white dark:hover:bg-dark-800 transition-colors z-10"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product); }}
+          >
+            <input 
+              type="checkbox" 
+              checked={isCompared} 
+              readOnly
+              className="w-4 h-4 rounded text-primary-500 focus:ring-primary-400" 
+            />
+            <span className="text-[10px] font-bold text-gray-700 dark:text-gray-200 uppercase tracking-tighter">Compare</span>
+          </div>
         </div>
 
         {/* Content */}
@@ -110,4 +128,4 @@ export default function ProductCard({ product }) {
       </Link>
     </div>
   );
-}   
+}

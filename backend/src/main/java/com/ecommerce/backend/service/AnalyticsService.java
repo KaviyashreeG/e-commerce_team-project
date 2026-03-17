@@ -32,7 +32,7 @@ public class AnalyticsService {
         long totalCustomers = userRepository.countByRole(UserRole.ROLE_CUSTOMER);
         long totalProducts = productRepository.countByStatus(ProductStatus.ACTIVE);
         long totalOrders = orderRepository.count();
-        BigDecimal totalRevenue = orderRepository.getTotalRevenue();
+        BigDecimal totalRevenue = orderRepository.getTotalRevenue(OrderStatus.CANCELLED);
 
         List<Object[]> rawStats = orderRepository.getDailyOrderStats(
                 LocalDateTime.now().minusDays(30));
@@ -67,7 +67,7 @@ public class AnalyticsService {
         long deliveredOrders = orderRepository.countByStatus(OrderStatus.DELIVERED);
         long cancelledOrders = orderRepository.countByStatus(OrderStatus.CANCELLED);
         long returnedOrders  = orderRepository.countByStatus(OrderStatus.RETURNED);
-        BigDecimal totalRevenue = orderRepository.getTotalRevenue();
+        BigDecimal totalRevenue = orderRepository.getTotalRevenue(OrderStatus.CANCELLED);
 
         // Weekly order counts (past 4 weeks)
         LocalDateTime now = LocalDateTime.now();

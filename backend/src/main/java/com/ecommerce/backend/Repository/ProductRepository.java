@@ -18,7 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findBySellerSellerIdAndStatus(Long sellerId, ProductStatus status);
     List<Product> findBySellerSellerId(Long sellerId);
 
-    @Query("SELECT p FROM Product p WHERE p.status = 'ACTIVE' AND " +
+    @Query("SELECT p FROM Product p WHERE p.status = :status AND " +
            "(:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
            "(:categoryId IS NULL OR p.category.categoryId = :categoryId) AND " +
            "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
@@ -27,6 +27,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                  @Param("categoryId") Long categoryId,
                                  @Param("minPrice") BigDecimal minPrice,
                                  @Param("maxPrice") BigDecimal maxPrice,
+                                 @Param("status") ProductStatus status,
                                  Pageable pageable);
 
     Page<Product> findByStatus(ProductStatus status, Pageable pageable);
@@ -39,17 +40,18 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p.name, SUM(oi.quantity) as totalSold FROM OrderItem oi JOIN oi.product p WHERE p.seller.sellerId = :sellerId GROUP BY p.name ORDER BY totalSold DESC")
     List<Object[]> findTopProductsBySeller(@Param("sellerId") Long sellerId);
 
-    @Query("SELECT p FROM Product p WHERE p.status = 'ACTIVE' AND p.productId != :productId AND (" +
+    @Query("SELECT p FROM Product p WHERE p.status = :status AND p.productId != :productId AND (" +
            "(:categoryId IS NOT NULL AND p.category.categoryId = :categoryId) OR (p.price >= :minPrice AND p.price <= :maxPrice))")
     Page<Product> findSimilarProducts(@Param("categoryId") Long categoryId,
                                       @Param("minPrice") BigDecimal minPrice,
                                       @Param("maxPrice") BigDecimal maxPrice,
                                       @Param("productId") Long productId,
+                                      @Param("status") ProductStatus status,
                                       Pageable pageable);
 
-    @Query("SELECT p FROM Product p WHERE p.status = 'ACTIVE' ORDER BY RANDOM()")
-    Page<Product> findRecommendations(@Param("userId") Long userId, Pageable pageable);
+    @Query("SELECT p FROM Product p WHERE p.status = :status")
+    Page<Product> findRecommendations(@Param("status") ProductStatus status, Pageable pageable);
 
-    @Query("SELECT p FROM Product p WHERE p.seller.sellerId = :sellerId AND p.status = 'ACTIVE' AND p.stock < 10")
-    List<Product> findLowStockProducts(@Param("sellerId") Long sellerId);
+    @Query("SELECT p FROM Product p WHERE p.seller.sellerId = :sellerId AND p.status = :status AND p.stock < 10")
+    List<Product> findLowStockProducts(@Param("sellerId") Long sellerId, @Param("status") ProductStatus status);
 }
