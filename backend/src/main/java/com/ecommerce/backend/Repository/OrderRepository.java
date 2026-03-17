@@ -20,8 +20,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findByCustomerCustomerId(Long customerId, Pageable pageable);
     long countByStatus(OrderStatus status);
 
-    @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Order o WHERE o.status NOT IN ('CANCELLED')")
-    BigDecimal getTotalRevenue();
+    @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Order o WHERE o.status != :status")
+    BigDecimal getTotalRevenue(@Param("status") OrderStatus status);
 
     @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Order o WHERE o.customer.customerId IN " +
            "(SELECT c.customerId FROM Customer c JOIN c.orders WHERE c.cart.cartId IN " +
@@ -43,6 +43,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT COUNT(o) FROM Order o WHERE o.createdAt >= :startDate AND o.createdAt < :endDate")
     long countByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Order o WHERE o.status = 'DELIVERED' AND o.createdAt >= :startDate")
-    BigDecimal getRevenueFromDelivered(@Param("startDate") LocalDateTime startDate);
+    @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Order o WHERE o.status = :status AND o.createdAt >= :startDate")
+    BigDecimal getRevenueFromDelivered(@Param("startDate") LocalDateTime startDate, @Param("status") OrderStatus status);
 }
