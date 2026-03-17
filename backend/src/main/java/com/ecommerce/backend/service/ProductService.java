@@ -190,7 +190,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductResponse> getRecommendations(Long userId) {
         // AI Logic: Recently viewed + Purchase history + Top selling
-        return productRepository.findRecommendations(userId, ProductStatus.ACTIVE, Pageable.ofSize(10))
+        return productRepository.findRecommendations(ProductStatus.ACTIVE, Pageable.ofSize(10))
                 .getContent().stream().map(this::toResponse).collect(Collectors.toList());
     }
 

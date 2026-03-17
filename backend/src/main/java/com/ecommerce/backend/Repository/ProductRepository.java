@@ -49,8 +49,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                       @Param("status") ProductStatus status,
                                       Pageable pageable);
 
-    @Query("SELECT p FROM Product p WHERE p.status = :status ORDER BY RANDOM()")
-    Page<Product> findRecommendations(@Param("userId") Long userId, @Param("status") ProductStatus status, Pageable pageable);
+    @Query("SELECT p FROM Product p WHERE p.status = :status")
+    Page<Product> findRecommendations(@Param("status") ProductStatus status, Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE p.seller.sellerId = :sellerId AND p.status = :status AND p.stock < 10")
     List<Product> findLowStockProducts(@Param("sellerId") Long sellerId, @Param("status") ProductStatus status);
